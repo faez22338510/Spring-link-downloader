@@ -35,9 +35,10 @@ public class ImageController {
         // Build the path to the image file
         String[] parts = image.split("/");
         String imageName = parts[parts.length - 1];
-        Path imagePath;
-        imagePath = Paths.get(IMAGE_DIRECTORY).resolve(imageName);
+        Path imagePath = Paths.get("").resolve(IMAGE_DIRECTORY).resolve(imageName).toAbsolutePath();
+//        imagePath = Paths.get(IMAGE_DIRECTORY).resolve(imageName);
         try {
+
             // Try to load the image
             Resource resource = new UrlResource(imagePath.toUri());
             HttpHeaders headers = new HttpHeaders();
