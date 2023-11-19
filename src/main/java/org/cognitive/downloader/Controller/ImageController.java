@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 
 @RestController
 public class ImageController {
@@ -33,6 +34,8 @@ public class ImageController {
     public ResponseEntity<Resource> getImage(
             @RequestParam String image
     ) {
+        System.out.println(new Date());
+        System.out.println(image);
         // Build the path to the image file
         String[] parts = image.split("/");
         String imageName = parts[parts.length - 1];
@@ -72,6 +75,8 @@ public class ImageController {
     public String test(
             @RequestParam String image
     ) {
+        System.out.println(new Date());
+        System.out.println(image);
         return image;
     }
 
