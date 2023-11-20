@@ -30,7 +30,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/images")
+    @GetMapping
     public ResponseEntity<Resource> getImage(
             @RequestParam String image
     ) {
