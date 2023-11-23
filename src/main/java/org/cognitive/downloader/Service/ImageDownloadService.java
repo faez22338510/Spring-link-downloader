@@ -5,6 +5,12 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.io.BufferedInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 @Service
 public class ImageDownloadService {
 
@@ -27,5 +33,17 @@ public class ImageDownloadService {
                 .uri(imageUrl)
                 .retrieve()
                 .bodyToMono(byte[].class);
+    }
+
+    public void downloadImage(String imageUrl, String saveDir) throws IOException {
+        URL url = new URL(imageUrl);
+        try (InputStream in = new BufferedInputStream(url.openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream(saveDir)) {
+            byte dataBuffer[] = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        }
     }
 }

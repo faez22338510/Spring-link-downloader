@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,10 +55,10 @@ public class ImageController {
                         .body(resource);
             } else {
                 var x = imageDownloadService.downloadImage(image).block();
-                if(imageName.contains("."))
-                    imageService.saveImage(IMAGE_DIRECTORY + imageName,x).block();
+                if (imageName.contains("."))
+                    imageService.saveImage(IMAGE_DIRECTORY + imageName, x).block();
                 else
-                    imageService.saveImage(IMAGE_DIRECTORY + imageName+".png",x).block();
+                    imageService.saveImage(IMAGE_DIRECTORY + imageName + ".png", x).block();
 
                 return ResponseEntity.ok()
                         .headers(headers)
@@ -65,6 +66,44 @@ public class ImageController {
             }
         } catch (MalformedURLException e) {
             // Handle the exception
+        }
+        // Handle other errors
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/im")
+    public ResponseEntity<Resource> getImageFromGermanServer(
+            @RequestParam String image
+    ) {
+        System.out.println(new Date());
+        System.out.println(image);
+        // Build the path to the image file
+        String[] parts = image.split("/");
+        String imageName = parts[parts.length - 1];
+        Path imagePath = Paths.get("").resolve(IMAGE_DIRECTORY).resolve(imageName).toAbsolutePath();
+//        imagePath = Paths.get(IMAGE_DIRECTORY).resolve(imageName);
+        try {
+
+            // Try to load the image
+            Resource resource = new UrlResource(imagePath.toUri());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", imageName);
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(resource);
+            } else {
+//                imageDownloadService.downloadImage("http://85.185.67.243:8080/images?image=" + image,IMAGE_DIRECTORY + imageName);
+                imageDownloadService.downloadImage("http://49.12.245.57:8081/images?image=" + image,IMAGE_DIRECTORY + imageName);
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(new UrlResource(imagePath.toUri()));
+            }
+        } catch (MalformedURLException e) {
+            // Handle the exception
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         // Handle other errors
