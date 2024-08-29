@@ -92,7 +92,7 @@ public class ImageController {
                         .body(resource);
             } else {
 //                imageDownloadService.downloadImage("http://85.185.67.243:8080/images?image=" + image,IMAGE_DIRECTORY + imageName);
-                imageDownloadService.downloadImage("http://49.12.245.57:8082/images?image=" + image,IMAGE_DIRECTORY + imageName);
+                imageDownloadService.downloadImage("http://49.13.30.62:8081?image=" + image,IMAGE_DIRECTORY + imageName);
                 return ResponseEntity.ok()
                         .headers(headers)
                         .body(new UrlResource(imagePath.toUri()));
